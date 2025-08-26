@@ -1,21 +1,22 @@
 package br.com.voting.vote.services.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import br.com.voting.vote.dtos.AssociateDTO;
 import br.com.voting.vote.exception.NotFoundException;
 import br.com.voting.vote.models.Associate;
 import br.com.voting.vote.repositories.AssociateRepository;
-import br.com.voting.vote.services.AssociateService;
+import br.com.voting.vote.services.PremiumAssociateService;
 import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
-public class AssociateServiceImpl implements AssociateService {
+public class PremiumAssociateServiceImpl implements PremiumAssociateService {
 
     private final AssociateRepository repository;
 
-    public AssociateServiceImpl(AssociateRepository repository) {
+    public PremiumAssociateServiceImpl(AssociateRepository repository) {
         this.repository = repository;
     }
 
@@ -25,6 +26,8 @@ public class AssociateServiceImpl implements AssociateService {
         Associate associate = new Associate();
         associate.setName(associateDTO.getName());
         associate.setCpf(associateDTO.getCpf());
+
+        // Pode ter lógica adicional para associados premium aqui
 
         repository.save(associate);
     }
@@ -58,5 +61,12 @@ public class AssociateServiceImpl implements AssociateService {
             associate.setName(associateDTO.getName());
             repository.save(associate);
         }
+    }
+
+    @Override
+    public void grantPremiumBenefits(String id) {
+        Associate associate = findById(id);
+        // Aqui você pode implementar a lógica para conceder benefícios premium
+        System.out.println("Benefícios premium concedidos ao associado: " + associate.getName());
     }
 }

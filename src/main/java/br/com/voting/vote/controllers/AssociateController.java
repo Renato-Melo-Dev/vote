@@ -1,14 +1,23 @@
 package br.com.voting.vote.controllers;
 
-import br.com.voting.vote.dtos.AssociateDTO;
-import br.com.voting.vote.models.Associate;
-import br.com.voting.vote.services.AssociateService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import br.com.voting.vote.dtos.AssociateDTO;
+import br.com.voting.vote.models.Associate;
+import br.com.voting.vote.services.AssociateService;
+import br.com.voting.vote.services.PremiumAssociateService;
 
 @RestController
 @RequestMapping("/associate")
@@ -45,6 +54,16 @@ public class AssociateController {
         associateService.updateAssociate(associateDTO, id);
         return ResponseEntity.noContent().build();
     }
+    
+    @PostMapping(path = "{id}/grant-benefits")
+public ResponseEntity<String> grantPremiumBenefits(@PathVariable("id") String id) {
+    if (associateService instanceof PremiumAssociateService premiumService) {
+        premiumService.grantPremiumBenefits(id);
+        return ResponseEntity.ok("Benefícios premium concedidos ao associado com ID " + id);
+    }
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body("Esta implementação de serviço não suporta benefícios premium.");
+}
 
 
 }
